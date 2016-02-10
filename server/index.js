@@ -6,12 +6,12 @@ var server = new PeerServer({port: PORT, allow_discovery: true});
 
 
 server.on('connection', function (id) {
-  console.log('new connection with id' + id);
+  console.log('new connection with id ' + id);
 });
 
 
 server.on('disconnect', function (id) {
-  console.log('disconnect with id' + id);
+  console.log('disconnect with id ' + id);
 });
 
 console.log('peer serving on ' + IP.address() + ':' + PORT);

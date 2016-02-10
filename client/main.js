@@ -1,40 +1,47 @@
 document.addEventListener('DOMContentLoaded', function () {
+  // PeerJS server location
+  var SERVER_IP = 'localhost';
+  var SERVER_PORT = 5000;
 
-  const SERVER_IP = '10.0.2.15';
-  const PORT = 5000;
-
-  //DOM elements manipulated by the user
+  // DOM elements manipulated as user interacts with the app
   var messageBox = document.querySelector('#messages');
-  var callIdEntry = document.querySelector('#caller-id');
+  var callerIdEntry = document.querySelector('#caller-id');
   var connectBtn = document.querySelector('#connect');
-  var reciepientIdEntry = document.querySelector('#recipient-id');
+  var recipientIdEntry = document.querySelector('#recipient-id');
   var dialBtn = document.querySelector('#dial');
   var remoteVideo = document.querySelector('#remote-video');
-  var localVideo = document.querySelector('local-video');
+  var localVideo = document.querySelector('#local-video');
 
+  // the ID set for this client
   var callerId = null;
-  var peer = null;
-  var localSream = null;
 
-  //TODO: refactor this, name p and para should be paragraph
+  // PeerJS object, instantiated when this client connects with its
+  // caller ID
+  var peer = null;
+
+  // the local video stream captured with getUserMedia()
+  var localStream = null;
+
+  // DOM utilities
   var makePara = function (text) {
     var p = document.createElement('p');
-    p.innerText(text);
+    p.innerText = text;
     return p;
   };
 
-  var addMessage = function (paragraph) {
-    if(messageBox.firstChild) {
-      messageBox.insertBefore(paragraph, messageBox.firstChild);
-    } else {
-      messageBox.appendChild(paragraph);
+  var addMessage = function (para) {
+    if (messageBox.firstChild) {
+      messageBox.insertBefore(para, messageBox.firstChild);
+    }
+    else {
+      messageBox.appendChild(para);
     }
   };
 
-  var logError = function (errorMessage) {
-    var paragraph = makePara('ERROR: ' + errorMessage);
-    paragraph.style.color = 'red';
-    addMessage(paragraph);
+  var logError = function (text) {
+    var p = makePara('ERROR: ' + text);
+    p.style.color = 'red';
+    addMessage(p);
   };
 
   var logMessage = function (text) {
@@ -81,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // set caller ID and connect to the PeerJS server
   var connect = function () {
+    console.log('connecting to the server');
     callerId = callerIdEntry.value;
 
     if (!callerId) {
